@@ -4,12 +4,13 @@ module RunApi
   module HappyHorse
     module Types
       TEXT_TO_VIDEO_MODEL = "happyhorse-text-to-video"
+      CHARACTER_MODEL = "happyhorse-character"
+      TEXT_TO_VIDEO_MODELS = [TEXT_TO_VIDEO_MODEL, CHARACTER_MODEL].freeze
       IMAGE_TO_VIDEO_MODEL = "happyhorse-image-to-video"
-      REFERENCE_TO_VIDEO_MODEL = "happyhorse-reference-to-video"
-      EDIT_VIDEO_MODEL = "happyhorse-video-edit"
-      RESOLUTIONS = %w[720p 1080p].freeze
+      EDIT_VIDEO_MODEL = "happyhorse-edit-video"
+      OUTPUT_RESOLUTIONS = %w[720p 1080p].freeze
       ASPECT_RATIOS = %w[16:9 9:16 1:1 4:3 3:4].freeze
-      AUDIO_SETTINGS = %w[auto origin].freeze
+      AUDIO_SETTINGS = %w[auto original].freeze
       DURATION_RANGE = (3..15)
       SEED_RANGE = (0..2_147_483_647)
 
@@ -30,8 +31,6 @@ module RunApi
 
       ImageToVideoResponse = TextToVideoResponse
       CompletedImageToVideoResponse = CompletedTextToVideoResponse
-      ReferenceToVideoResponse = TextToVideoResponse
-      CompletedReferenceToVideoResponse = CompletedTextToVideoResponse
       EditVideoResponse = TextToVideoResponse
       CompletedEditVideoResponse = CompletedTextToVideoResponse
     end

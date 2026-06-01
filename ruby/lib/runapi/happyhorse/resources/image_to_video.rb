@@ -10,7 +10,6 @@ module RunApi
 
         RESPONSE_CLASS = Types::ImageToVideoResponse
         COMPLETED_RESPONSE_CLASS = Types::CompletedImageToVideoResponse
-        IMAGE_URLS_MAX = 1
 
         def initialize(http)
           @http = http
@@ -35,13 +34,10 @@ module RunApi
 
         def validate_params!(params)
           raise Core::ValidationError, "model is required" unless param(params, :model) == Types::IMAGE_TO_VIDEO_MODEL
+          raise Core::ValidationError, "first_frame_image_url is required" unless param(params, :first_frame_image_url)
 
-          image_urls = param(params, :image_urls)
-          raise Core::ValidationError, "image_urls is required" unless image_urls.is_a?(Array) && image_urls.any?
-          raise Core::ValidationError, "image_urls supports at most #{IMAGE_URLS_MAX} entry" if image_urls.size > IMAGE_URLS_MAX
-
-          validate_optional!(params, :resolution, Types::RESOLUTIONS)
-          validate_integer_range!(params, :duration, Types::DURATION_RANGE)
+          validate_optional!(params, :output_resolution, Types::OUTPUT_RESOLUTIONS)
+          validate_integer_range!(params, :duration_seconds, Types::DURATION_RANGE)
           validate_integer_range!(params, :seed, Types::SEED_RANGE)
         end
 
@@ -49,8 +45,7 @@ module RunApi
           value = param(params, key)
           return unless value
 
-          integer = Integer(value, exception: false)
-          return if integer && range.cover?(integer)
+          return if value.is_a?(Integer) && range.cover?(value)
 
           raise Core::ValidationError, "#{key} must be an integer between #{range.min} and #{range.max}"
         end

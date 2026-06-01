@@ -36,14 +36,14 @@ module RunApi
         def validate_params!(params)
           raise Core::ValidationError, "model is required" unless param(params, :model) == Types::EDIT_VIDEO_MODEL
           raise Core::ValidationError, "prompt is required" unless param(params, :prompt)
-          raise Core::ValidationError, "video_url is required" unless param(params, :video_url)
+          raise Core::ValidationError, "source_video_url is required" unless param(params, :source_video_url)
 
-          reference_image = param(params, :reference_image)
-          if reference_image && (!reference_image.is_a?(Array) || !REFERENCE_IMAGE_RANGE.cover?(reference_image.size))
-            raise Core::ValidationError, "reference_image must include at most #{REFERENCE_IMAGE_RANGE.max} entries"
+          reference_image_urls = param(params, :reference_image_urls)
+          if reference_image_urls && (!reference_image_urls.is_a?(Array) || !REFERENCE_IMAGE_RANGE.cover?(reference_image_urls.size))
+            raise Core::ValidationError, "reference_image_urls must include at most #{REFERENCE_IMAGE_RANGE.max} entries"
           end
 
-          validate_optional!(params, :resolution, Types::RESOLUTIONS)
+          validate_optional!(params, :output_resolution, Types::OUTPUT_RESOLUTIONS)
           validate_optional!(params, :audio_setting, Types::AUDIO_SETTINGS)
           validate_integer_range!(params, :seed, Types::SEED_RANGE)
         end
@@ -52,8 +52,7 @@ module RunApi
           value = param(params, key)
           return unless value
 
-          integer = Integer(value, exception: false)
-          return if integer && range.cover?(integer)
+          return if value.is_a?(Integer) && range.cover?(value)
 
           raise Core::ValidationError, "#{key} must be an integer between #{range.min} and #{range.max}"
         end

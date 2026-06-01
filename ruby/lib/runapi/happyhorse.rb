@@ -4,7 +4,6 @@ require "runapi/core"
 require_relative "happyhorse/types"
 require_relative "happyhorse/resources/edit_video"
 require_relative "happyhorse/resources/image_to_video"
-require_relative "happyhorse/resources/reference_to_video"
 require_relative "happyhorse/resources/text_to_video"
 require_relative "happyhorse/client"
 

@@ -7,7 +7,6 @@ describe('HappyHorseClient', () => {
 
     expect(client.textToVideo).toBeDefined();
     expect(client.imageToVideo).toBeDefined();
-    expect(client.referenceToVideo).toBeDefined();
     expect(client.editVideo).toBeDefined();
   });
 });

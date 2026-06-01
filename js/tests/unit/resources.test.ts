@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { HttpClient } from '@runapi.ai/core';
 import { EditVideo } from '../../src/resources/edit-video';
 import { ImageToVideo } from '../../src/resources/image-to-video';
-import { ReferenceToVideo } from '../../src/resources/reference-to-video';
 import { TextToVideo } from '../../src/resources/text-to-video';
 
 describe('HappyHorse resources', () => {
@@ -21,9 +20,9 @@ describe('HappyHorse resources', () => {
     await textToVideo.create({
       model: 'happyhorse-text-to-video',
       prompt: 'A cardboard city lights up at night',
-      resolution: '1080p',
+      output_resolution: '1080p',
       aspect_ratio: '16:9',
-      duration: 5,
+      duration_seconds: 5,
       seed: 1622429582,
     });
 
@@ -31,10 +30,37 @@ describe('HappyHorse resources', () => {
       body: {
         model: 'happyhorse-text-to-video',
         prompt: 'A cardboard city lights up at night',
-        resolution: '1080p',
+        output_resolution: '1080p',
         aspect_ratio: '16:9',
-        duration: 5,
+        duration_seconds: 5,
         seed: 1622429582,
+      },
+    });
+  });
+
+  it('creates character text-to-video tasks with reference_image_urls', async () => {
+    vi.mocked(mockHttp.request).mockResolvedValueOnce({ id: 'task-5' });
+    const textToVideo = new TextToVideo(mockHttp);
+
+    await textToVideo.create({
+      model: 'happyhorse-character',
+      prompt: 'Character1 walks through a paper city',
+      reference_image_urls: ['https://cdn.runapi.ai/public/samples/reference-1.jpg'],
+      output_resolution: '720p',
+      aspect_ratio: '9:16',
+      duration_seconds: 3,
+      seed: 493720,
+    });
+
+    expect(mockHttp.request).toHaveBeenCalledWith('POST', '/api/v1/happyhorse/text_to_video', {
+      body: {
+        model: 'happyhorse-character',
+        prompt: 'Character1 walks through a paper city',
+        reference_image_urls: ['https://cdn.runapi.ai/public/samples/reference-1.jpg'],
+        output_resolution: '720p',
+        aspect_ratio: '9:16',
+        duration_seconds: 3,
+        seed: 493720,
       },
     });
   });
@@ -53,26 +79,26 @@ describe('HappyHorse resources', () => {
     expect(result.videos?.[0]?.url).toBe('https://tempfile.runapi.ai/happyhorse/out.mp4');
   });
 
-  it('creates image-to-video tasks with image_urls', async () => {
+  it('creates image-to-video tasks with first_frame_image_url', async () => {
     vi.mocked(mockHttp.request).mockResolvedValueOnce({ id: 'task-3' });
     const imageToVideo = new ImageToVideo(mockHttp);
 
     await imageToVideo.create({
       model: 'happyhorse-image-to-video',
-      image_urls: ['https://cdn.runapi.ai/public/samples/image-to-video.jpg'],
+      first_frame_image_url: 'https://cdn.runapi.ai/public/samples/image-to-video.jpg',
       prompt: 'Bring the still frame to life',
-      resolution: '720p',
-      duration: 3,
+      output_resolution: '720p',
+      duration_seconds: 3,
       seed: 492720,
     });
 
     expect(mockHttp.request).toHaveBeenCalledWith('POST', '/api/v1/happyhorse/image_to_video', {
       body: {
         model: 'happyhorse-image-to-video',
-        image_urls: ['https://cdn.runapi.ai/public/samples/image-to-video.jpg'],
+        first_frame_image_url: 'https://cdn.runapi.ai/public/samples/image-to-video.jpg',
         prompt: 'Bring the still frame to life',
-        resolution: '720p',
-        duration: 3,
+        output_resolution: '720p',
+        duration_seconds: 3,
         seed: 492720,
       },
     });
@@ -92,69 +118,28 @@ describe('HappyHorse resources', () => {
     expect(result.videos?.[0]?.url).toBe('https://tempfile.runapi.ai/happyhorse/i2v.mp4');
   });
 
-  it('creates reference-to-video tasks with reference_image', async () => {
-    vi.mocked(mockHttp.request).mockResolvedValueOnce({ id: 'task-5' });
-    const referenceToVideo = new ReferenceToVideo(mockHttp);
-
-    await referenceToVideo.create({
-      model: 'happyhorse-reference-to-video',
-      prompt: 'Character1 walks through a paper city',
-      reference_image: ['https://cdn.runapi.ai/public/samples/reference-1.jpg'],
-      resolution: '720p',
-      aspect_ratio: '9:16',
-      duration: 3,
-      seed: 493720,
-    });
-
-    expect(mockHttp.request).toHaveBeenCalledWith('POST', '/api/v1/happyhorse/reference_to_video', {
-      body: {
-        model: 'happyhorse-reference-to-video',
-        prompt: 'Character1 walks through a paper city',
-        reference_image: ['https://cdn.runapi.ai/public/samples/reference-1.jpg'],
-        resolution: '720p',
-        aspect_ratio: '9:16',
-        duration: 3,
-        seed: 493720,
-      },
-    });
-  });
-
-  it('gets reference-to-video tasks by id', async () => {
-    vi.mocked(mockHttp.request).mockResolvedValueOnce({
-      id: 'task-6',
-      status: 'completed',
-      videos: [{ url: 'https://tempfile.runapi.ai/happyhorse/r2v.mp4' }],
-    });
-    const referenceToVideo = new ReferenceToVideo(mockHttp);
-
-    const result = await referenceToVideo.get('task-6');
-
-    expect(mockHttp.request).toHaveBeenCalledWith('GET', '/api/v1/happyhorse/reference_to_video/task-6', {});
-    expect(result.videos?.[0]?.url).toBe('https://tempfile.runapi.ai/happyhorse/r2v.mp4');
-  });
-
-  it('creates edit-video tasks with video_url and reference_image', async () => {
+  it('creates edit-video tasks with source_video_url and reference_image_urls', async () => {
     vi.mocked(mockHttp.request).mockResolvedValueOnce({ id: 'task-7' });
     const editVideo = new EditVideo(mockHttp);
 
     await editVideo.create({
-      model: 'happyhorse-video-edit',
+      model: 'happyhorse-edit-video',
       prompt: 'Make the source video look cinematic',
-      video_url: 'https://tempfile.runapi.ai/happyhorse/source-5s.mp4',
-      reference_image: ['https://cdn.runapi.ai/public/samples/reference-1.jpg'],
-      resolution: '720p',
-      audio_setting: 'origin',
+      source_video_url: 'https://tempfile.runapi.ai/happyhorse/source-5s.mp4',
+      reference_image_urls: ['https://cdn.runapi.ai/public/samples/reference-1.jpg'],
+      output_resolution: '720p',
+      audio_setting: 'original',
       seed: 494720,
     });
 
     expect(mockHttp.request).toHaveBeenCalledWith('POST', '/api/v1/happyhorse/edit_video', {
       body: {
-        model: 'happyhorse-video-edit',
+        model: 'happyhorse-edit-video',
         prompt: 'Make the source video look cinematic',
-        video_url: 'https://tempfile.runapi.ai/happyhorse/source-5s.mp4',
-        reference_image: ['https://cdn.runapi.ai/public/samples/reference-1.jpg'],
-        resolution: '720p',
-        audio_setting: 'origin',
+        source_video_url: 'https://tempfile.runapi.ai/happyhorse/source-5s.mp4',
+        reference_image_urls: ['https://cdn.runapi.ai/public/samples/reference-1.jpg'],
+        output_resolution: '720p',
+        audio_setting: 'original',
         seed: 494720,
       },
     });

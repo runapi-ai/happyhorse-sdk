@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Install this agent skill, inspect HappyHorse fields, then run text, image, reference-to-video, or edit-video jobs through the RunAPI CLI.
+  Install this agent skill, inspect HappyHorse fields, then run text, image, or edit-video jobs through the RunAPI CLI.
 </p>
 
 <p align="center">
@@ -21,7 +21,7 @@
 </div>
 <br/>
 
-Generate text, image, reference-to-video, or edit-video clips with HappyHorse in 720p or 1080p. This skill helps Claude Code, Codex, Gemini CLI, Cursor, and 50+ agents integrate HappyHorse through RunAPI.
+Generate text, image, or edit-video clips with HappyHorse in 720p or 1080p. Text-to-video can also use ordered reference images through the character model. This skill helps Claude Code, Codex, Gemini CLI, Cursor, and 50+ agents integrate HappyHorse through RunAPI.
 
 The canonical agent file is `skills/happyhorse/SKILL.md`.
 
@@ -51,22 +51,23 @@ import { HappyHorseClient } from '@runapi.ai/happyhorse';
 
 const client = new HappyHorseClient();
 const result = await client.textToVideo.run({
-  model: 'happyhorse-text-to-video',
-  prompt: 'A tiny paper horse gallops through a miniature cardboard city at night.',
-  resolution: '1080p',
+  model: 'happyhorse-character',
+  prompt: 'Character1 walks through a miniature cardboard city at night.',
+  reference_image_urls: ['https://cdn.runapi.ai/public/samples/reference-1.jpg'],
+  output_resolution: '1080p',
   aspect_ratio: '16:9',
-  duration: 5,
+  duration_seconds: 5,
 });
 ```
 
-Image-to-video tasks use `client.imageToVideo` with `model: 'happyhorse-image-to-video'` and exactly one `image_urls` entry. Reference-to-video tasks use `client.referenceToVideo` with `model: 'happyhorse-reference-to-video'` and 1-9 `reference_image` entries. Edit-video tasks use `client.editVideo` with `model: 'happyhorse-video-edit'`, one `video_url`, and optional `reference_image` entries.
+Image-to-video tasks use `client.imageToVideo` with `model: 'happyhorse-image-to-video'` and `first_frame_image_url`. Character-guided text-to-video tasks use `client.textToVideo` with `model: 'happyhorse-character'` and 1-9 `reference_image_urls` entries. Edit-video tasks use `client.editVideo` with `model: 'happyhorse-edit-video'`, one `source_video_url`, and optional `reference_image_urls`.
 
 ## Variants
 
 - `happyhorse-text-to-video`: create 3-15 second videos from a text prompt with 720p or 1080p output.
+- `happyhorse-character`: create 3-15 second text-to-video clips guided by 1-9 ordered reference images.
 - `happyhorse-image-to-video`: animate one first-frame image into a 3-15 second video with 720p or 1080p output.
-- `happyhorse-reference-to-video`: create 3-15 second videos from a prompt and 1-9 ordered reference images.
-- `happyhorse-video-edit`: edit one 3-60 second source video using a prompt and up to 5 reference images.
+- `happyhorse-edit-video`: edit one 3-60 second source video using a prompt and up to 5 reference images.
 
 ## Routing
 
@@ -75,8 +76,8 @@ Image-to-video tasks use `client.imageToVideo` with `model: 'happyhorse-image-to
 - SDK docs: https://runapi.ai/docs#sdk-happyhorse
 - SDK repository: https://github.com/runapi-ai/happyhorse-sdk
 - Image-to-video pricing and rate limits: https://runapi.ai/models/happyhorse/image-to-video
-- Reference-to-video pricing and rate limits: https://runapi.ai/models/happyhorse/reference-to-video
-- Edit-video pricing and rate limits: https://runapi.ai/models/happyhorse/video-edit
+- Character pricing and rate limits: https://runapi.ai/models/happyhorse/character
+- Edit-video pricing and rate limits: https://runapi.ai/models/happyhorse/edit-video
 - Pricing and rate limits: https://runapi.ai/models/happyhorse/text-to-video
 - Provider comparison: https://runapi.ai/providers/alibaba
 - Browse all RunAPI models and skills: https://runapi.ai/models

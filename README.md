@@ -20,7 +20,7 @@
 </div>
 <br/>
 
-The happyhorse ai api SDK packages JavaScript, Ruby, and Go clients for HappyHorse on RunAPI. Use this happyhorse ai api SDK for text, image, reference-to-video, and edit-video workflows that need typed installs, JSON request bodies, task polling, and consistent RunAPI errors across services.
+The happyhorse ai api SDK packages JavaScript, Ruby, and Go clients for HappyHorse on RunAPI. Use this happyhorse ai api SDK for text, image, and edit-video workflows that need typed installs, JSON request bodies, task polling, and consistent RunAPI errors across services.
 
 HappyHorse belongs to the Alibaba catalog on RunAPI. The public model page is https://runapi.ai/models/happyhorse. The public `happyhorse-sdk` repository groups the JavaScript, Ruby, and Go packages for this model.
 
@@ -40,11 +40,15 @@ import { HappyHorseClient } from '@runapi.ai/happyhorse';
 const client = new HappyHorseClient();
 
 const task = await client.textToVideo.create({
-  model: 'happyhorse-text-to-video',
-  prompt: 'A cardboard city lights up at night',
-  resolution: '1080p',
+  model: 'happyhorse-character',
+  prompt: 'Character1 walks through a paper city and waves at character2.',
+  reference_image_urls: [
+    'https://cdn.runapi.ai/public/samples/reference-1.jpg',
+    'https://cdn.runapi.ai/public/samples/reference-2.jpg',
+  ],
+  output_resolution: '1080p',
   aspect_ratio: '16:9',
-  duration: 5,
+  duration_seconds: 5,
 });
 
 const status = await client.textToVideo.get(task.id);
@@ -55,44 +59,26 @@ const status = await client.textToVideo.get(task.id);
 ```typescript
 const imageTask = await client.imageToVideo.create({
   model: 'happyhorse-image-to-video',
-  image_urls: ['https://cdn.runapi.ai/public/samples/image-to-video.jpg'],
+  first_frame_image_url: 'https://cdn.runapi.ai/public/samples/image-to-video.jpg',
   prompt: 'Bring the still frame to life with a gentle cinematic camera move.',
-  resolution: '1080p',
-  duration: 5,
+  output_resolution: '1080p',
+  duration_seconds: 5,
 });
 
 const imageStatus = await client.imageToVideo.get(imageTask.id);
-```
-
-## Reference-to-Video
-
-```typescript
-const referenceTask = await client.referenceToVideo.create({
-  model: 'happyhorse-reference-to-video',
-  prompt: 'Character1 walks through a paper city and waves at character2.',
-  reference_image: [
-    'https://cdn.runapi.ai/public/samples/reference-1.jpg',
-    'https://cdn.runapi.ai/public/samples/reference-2.jpg',
-  ],
-  resolution: '1080p',
-  aspect_ratio: '16:9',
-  duration: 5,
-});
-
-const referenceStatus = await client.referenceToVideo.get(referenceTask.id);
 ```
 
 ## Edit Video
 
 ```typescript
 const editTask = await client.editVideo.create({
-  model: 'happyhorse-video-edit',
+  model: 'happyhorse-edit-video',
   prompt: 'Make the horse-headed character wear the striped sweater from the reference image.',
-  video_url: 'https://cdn.runapi.ai/public/samples/video.mp4',
-  reference_image: [
+  source_video_url: 'https://cdn.runapi.ai/public/samples/video.mp4',
+  reference_image_urls: [
     'https://cdn.runapi.ai/public/samples/reference-1.jpg',
   ],
-  resolution: '1080p',
+  output_resolution: '1080p',
   audio_setting: 'auto',
 });
 
@@ -107,8 +93,8 @@ const editStatus = await client.editVideo.get(editTask.id);
 - SDK repository: https://github.com/runapi-ai/happyhorse-sdk
 - Skill repository: https://github.com/runapi-ai/happyhorse
 - Image-to-video pricing and rate limits: https://runapi.ai/models/happyhorse/image-to-video
-- Reference-to-video pricing and rate limits: https://runapi.ai/models/happyhorse/reference-to-video
-- Edit-video pricing and rate limits: https://runapi.ai/models/happyhorse/video-edit
+- Character pricing and rate limits: https://runapi.ai/models/happyhorse/character
+- Edit-video pricing and rate limits: https://runapi.ai/models/happyhorse/edit-video
 - Pricing and rate limits: https://runapi.ai/models/happyhorse/text-to-video
 - Provider comparison: https://runapi.ai/providers/alibaba
 - Full catalog: https://runapi.ai/models

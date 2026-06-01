@@ -10,6 +10,7 @@ module RunApi
 
         RESPONSE_CLASS = Types::TextToVideoResponse
         COMPLETED_RESPONSE_CLASS = Types::CompletedTextToVideoResponse
+        REFERENCE_IMAGE_URLS_RANGE = (1..9)
 
         def initialize(http)
           @http = http
@@ -33,12 +34,22 @@ module RunApi
         private
 
         def validate_params!(params)
-          raise Core::ValidationError, "model is required" unless param(params, :model) == Types::TEXT_TO_VIDEO_MODEL
+          model = param(params, :model)
+          raise Core::ValidationError, "model is required" unless Types::TEXT_TO_VIDEO_MODELS.include?(model)
           raise Core::ValidationError, "prompt is required" unless param(params, :prompt)
 
-          validate_optional!(params, :resolution, Types::RESOLUTIONS)
+          reference_image_urls = param(params, :reference_image_urls)
+          if model == Types::CHARACTER_MODEL
+            unless reference_image_urls.is_a?(Array) && REFERENCE_IMAGE_URLS_RANGE.cover?(reference_image_urls.size)
+              raise Core::ValidationError, "reference_image_urls must include between #{REFERENCE_IMAGE_URLS_RANGE.min} and #{REFERENCE_IMAGE_URLS_RANGE.max} entries"
+            end
+          elsif reference_image_urls
+            raise Core::ValidationError, "reference_image_urls is only supported for #{Types::CHARACTER_MODEL}"
+          end
+
+          validate_optional!(params, :output_resolution, Types::OUTPUT_RESOLUTIONS)
           validate_optional!(params, :aspect_ratio, Types::ASPECT_RATIOS)
-          validate_integer_range!(params, :duration, Types::DURATION_RANGE)
+          validate_integer_range!(params, :duration_seconds, Types::DURATION_RANGE)
           validate_integer_range!(params, :seed, Types::SEED_RANGE)
         end
 
@@ -46,8 +57,7 @@ module RunApi
           value = param(params, key)
           return unless value
 
-          integer = Integer(value, exception: false)
-          return if integer && range.cover?(integer)
+          return if value.is_a?(Integer) && range.cover?(value)
 
           raise Core::ValidationError, "#{key} must be an integer between #{range.min} and #{range.max}"
         end
