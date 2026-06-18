@@ -1,18 +1,35 @@
 package happyhorse
 
+// TextToVideoModel selects the HappyHorse text-to-video engine.
 type TextToVideoModel string
+
+// ImageToVideoModel selects the HappyHorse image-to-video engine.
 type ImageToVideoModel string
+
+// EditVideoModel selects the HappyHorse edit-video engine.
 type EditVideoModel string
+
+// OutputResolution controls the output video resolution.
 type OutputResolution string
+
+// AspectRatio controls the output video aspect ratio.
 type AspectRatio string
+
+// AudioSetting controls how audio is handled in edit-video tasks.
 type AudioSetting string
+
+// TaskStatus is the async task lifecycle state (e.g. "processing", "completed", "failed").
 type TaskStatus string
 
 const (
-	ModelTextToVideo  TextToVideoModel  = "happyhorse-text-to-video"
-	ModelCharacter    TextToVideoModel  = "happyhorse-character"
+	// ModelTextToVideo generates video from a text prompt.
+	ModelTextToVideo TextToVideoModel = "happyhorse-text-to-video"
+	// ModelCharacter generates character-consistent video. Requires ReferenceImageURLs (1-9 images).
+	ModelCharacter TextToVideoModel = "happyhorse-character"
+	// ModelImageToVideo animates a still first-frame image into video.
 	ModelImageToVideo ImageToVideoModel = "happyhorse-image-to-video"
-	ModelEditVideo    EditVideoModel    = "happyhorse-edit-video"
+	// ModelEditVideo transforms an existing video guided by a text prompt.
+	ModelEditVideo EditVideoModel = "happyhorse-edit-video"
 
 	OutputResolution720P  OutputResolution = "720p"
 	OutputResolution1080P OutputResolution = "1080p"
@@ -21,10 +38,13 @@ const (
 	AspectRatio11         AspectRatio      = "1:1"
 	AspectRatio43         AspectRatio      = "4:3"
 	AspectRatio34         AspectRatio      = "3:4"
-	AudioSettingAuto      AudioSetting     = "auto"
-	AudioSettingOriginal  AudioSetting     = "original"
+	// AudioSettingAuto lets the model decide whether to regenerate or preserve audio.
+	AudioSettingAuto AudioSetting = "auto"
+	// AudioSettingOriginal preserves the source video's original audio track.
+	AudioSettingOriginal AudioSetting = "original"
 )
 
+// AsyncTaskResponse carries the task ID, lifecycle status, and error for all HappyHorse async operations.
 type AsyncTaskResponse struct {
 	ID     string     `json:"id"`
 	Status TaskStatus `json:"status"`
@@ -35,15 +55,19 @@ func (r AsyncTaskResponse) GetID() string     { return r.ID }
 func (r AsyncTaskResponse) GetStatus() string { return string(r.Status) }
 func (r AsyncTaskResponse) GetError() string  { return r.Error }
 
+// Video holds a URL to a generated video file.
 type Video struct {
 	URL string `json:"url"`
 }
 
+// TextToVideoResponse is the completed result of a text-to-video, image-to-video, or edit-video task.
 type TextToVideoResponse struct {
 	AsyncTaskResponse
 	Videos []Video `json:"videos,omitempty"`
 }
 
+// TextToVideoParams configures text-to-video and character-consistent video generation.
+// When Model is [ModelCharacter], ReferenceImageURLs (1-9 images) is required for identity consistency.
 type TextToVideoParams struct {
 	Model              TextToVideoModel `json:"model" help:"required; model slug"`
 	Prompt             string           `json:"prompt" help:"required; up to 5000 non-Chinese chars or 2500 Chinese chars"`
@@ -55,6 +79,7 @@ type TextToVideoParams struct {
 	CallbackURL        string           `json:"callback_url,omitempty" help:"optional; webhook URL"`
 }
 
+// ImageToVideoParams configures image-to-video generation from a first-frame image.
 type ImageToVideoParams struct {
 	Model              ImageToVideoModel `json:"model" help:"required; model slug"`
 	FirstFrameImageURL string            `json:"first_frame_image_url" help:"required; public first-frame image URL"`
@@ -65,6 +90,8 @@ type ImageToVideoParams struct {
 	CallbackURL        string            `json:"callback_url,omitempty" help:"optional; webhook URL"`
 }
 
+// EditVideoParams configures video editing. Transforms an existing SourceVideoURL (3-60s MP4/MOV)
+// guided by a text prompt and optional reference images. Use AudioSetting to preserve the original audio.
 type EditVideoParams struct {
 	Model              EditVideoModel   `json:"model" help:"required; model slug"`
 	Prompt             string           `json:"prompt" help:"required; edit instruction, up to 5000 non-Chinese chars or 2500 Chinese chars"`

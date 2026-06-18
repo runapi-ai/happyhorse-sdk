@@ -3,6 +3,8 @@
 module RunApi
   module HappyHorse
     module Resources
+      # HappyHorse edit-video resource.
+      # Transform an existing video with a text prompt and optional reference images.
       class EditVideo
         include RunApi::Core::ResourceHelpers
 
@@ -16,17 +18,29 @@ module RunApi
           @http = http
         end
 
+        # Create an edit-video task and wait until complete.
+        #
+        # @param params [Hash] edit-video parameters
+        # @return [RunApi::HappyHorse::Types::CompletedEditVideoResponse] completed task with videos
         def run(**params)
           task = create(**params)
           poll_until_complete { get(task.id) }
         end
 
+        # Create an edit-video task.
+        #
+        # @param params [Hash] edit-video parameters
+        # @return [RunApi::HappyHorse::Types::EditVideoResponse] task creation result with id
         def create(**params)
           params = compact_params(params)
           validate_params!(params)
           request(:post, ENDPOINT, body: params)
         end
 
+        # Get edit-video task status by task ID.
+        #
+        # @param id [String] task ID
+        # @return [RunApi::HappyHorse::Types::EditVideoResponse] current task status
         def get(id)
           request(:get, "#{ENDPOINT}/#{id}")
         end

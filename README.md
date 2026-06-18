@@ -99,6 +99,10 @@ const editStatus = await client.editVideo.get(editTask.id);
 - Provider comparison: https://runapi.ai/providers/alibaba
 - Full catalog: https://runapi.ai/models
 
+## Generated file storage
+
+RunAPI-generated file URLs are temporary. Download and store generated images, videos, audio, or other files in your own durable storage within 7 days; do not treat returned URLs as long-term assets.
+
 ## License
 
 Licensed under the Apache License, Version 2.0.

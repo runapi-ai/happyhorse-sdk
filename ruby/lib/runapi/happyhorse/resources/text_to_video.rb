@@ -3,6 +3,8 @@
 module RunApi
   module HappyHorse
     module Resources
+      # HappyHorse text-to-video resource.
+      # Generate video from a text prompt, with optional character consistency via happyhorse-character.
       class TextToVideo
         include RunApi::Core::ResourceHelpers
 
@@ -16,17 +18,29 @@ module RunApi
           @http = http
         end
 
+        # Create a text-to-video task and wait until complete.
+        #
+        # @param params [Hash] text-to-video parameters
+        # @return [RunApi::HappyHorse::Types::CompletedTextToVideoResponse] completed task with videos
         def run(**params)
           task = create(**params)
           poll_until_complete { get(task.id) }
         end
 
+        # Create a text-to-video task.
+        #
+        # @param params [Hash] text-to-video parameters
+        # @return [RunApi::HappyHorse::Types::TextToVideoResponse] task creation result with id
         def create(**params)
           params = compact_params(params)
           validate_params!(params)
           request(:post, ENDPOINT, body: params)
         end
 
+        # Get text-to-video task status by task ID.
+        #
+        # @param id [String] task ID
+        # @return [RunApi::HappyHorse::Types::TextToVideoResponse] current task status
         def get(id)
           request(:get, "#{ENDPOINT}/#{id}")
         end

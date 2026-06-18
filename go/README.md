@@ -31,6 +31,8 @@ video, err := client.TextToVideo.Run(context.Background(), happyhorse.TextToVide
 
 For image-to-video, call `client.ImageToVideo.Run` with `Model: happyhorse.ModelImageToVideo` and exactly one `ImageURLs` entry. For character-guided text-to-video, call `client.TextToVideo.Run` with `Model: happyhorse.ModelCharacter` and 1-9 `ReferenceImageURLs` entries. For edit-video, call `client.EditVideo.Run` with `Model: happyhorse.ModelEditVideo`, one `VideoURL`, and optional `ReferenceImage` entries.
 
+RunAPI-generated file URLs are temporary. Download and store generated images, videos, audio, or other files in your own durable storage within 7 days; do not treat returned URLs as long-term assets.
+
 ## Links
 
 - Model page: https://runapi.ai/models/happyhorse

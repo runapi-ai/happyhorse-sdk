@@ -26,6 +26,8 @@ video = client.text_to_video.run(
 
 For image-to-video, call `client.image_to_video.run` with `model: "happyhorse-image-to-video"` and exactly one `image_urls` entry. For character-guided text-to-video, call `client.text_to_video.run` with `model: "happyhorse-character"` and 1-9 `reference_image_urls` entries. For edit-video, call `client.edit_video.run` with `model: "happyhorse-edit-video"`, one `video_url`, and optional `reference_image` entries.
 
+RunAPI-generated file URLs are temporary. Download and store generated images, videos, audio, or other files in your own durable storage within 7 days; do not treat returned URLs as long-term assets.
+
 ## Links
 
 - Model page: https://runapi.ai/models/happyhorse
