@@ -1,7 +1,10 @@
 {
   "name": "@runapi.ai/happyhorse",
+  "runapi": {
+    "slug": "happyhorse"
+  },
   "version": "0.2.6",
-  "description": "RunAPI HappyHorse SDK for JavaScript, Ruby, and Go",
+  "description": "RunAPI HappyHorse SDK for text-to-video, image-to-video, and edit-video workflows in JavaScript, Python, Ruby, Go, and Java",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -48,7 +51,15 @@
     "sdk",
     "typescript",
     "ruby",
-    "golang"
+    "golang",
+    "java",
+    "python",
+    "maven",
+    "gradle",
+    "video-generation",
+    "text-to-video",
+    "video-api",
+    "happyhorse-ai-api"
   ],
   "author": "RunAPI",
   "license": "Apache-2.0",

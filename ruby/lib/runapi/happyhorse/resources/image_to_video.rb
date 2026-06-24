@@ -47,10 +47,8 @@ module RunApi
         private
 
         def validate_params!(params)
-          raise Core::ValidationError, "model is required" unless param(params, :model) == Types::IMAGE_TO_VIDEO_MODEL
-          raise Core::ValidationError, "first_frame_image_url is required" unless param(params, :first_frame_image_url)
+          validate_contract!(CONTRACT["image-to-video"], params)
 
-          validate_optional!(params, :output_resolution, Types::OUTPUT_RESOLUTIONS)
           validate_integer_range!(params, :duration_seconds, Types::DURATION_RANGE)
           validate_integer_range!(params, :seed, Types::SEED_RANGE)
         end

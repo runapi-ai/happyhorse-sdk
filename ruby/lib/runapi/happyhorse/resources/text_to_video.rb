@@ -48,21 +48,19 @@ module RunApi
         private
 
         def validate_params!(params)
-          model = param(params, :model)
-          raise Core::ValidationError, "model is required" unless Types::TEXT_TO_VIDEO_MODELS.include?(model)
+          validate_contract!(CONTRACT["text-to-video"], params)
+
           raise Core::ValidationError, "prompt is required" unless param(params, :prompt)
 
           reference_image_urls = param(params, :reference_image_urls)
-          if model == Types::CHARACTER_MODEL
-            unless reference_image_urls.is_a?(Array) && REFERENCE_IMAGE_URLS_RANGE.cover?(reference_image_urls.size)
+          if param(params, :model) == Types::CHARACTER_MODEL
+            if reference_image_urls && !(reference_image_urls.is_a?(Array) && REFERENCE_IMAGE_URLS_RANGE.cover?(reference_image_urls.size))
               raise Core::ValidationError, "reference_image_urls must include between #{REFERENCE_IMAGE_URLS_RANGE.min} and #{REFERENCE_IMAGE_URLS_RANGE.max} entries"
             end
           elsif reference_image_urls
             raise Core::ValidationError, "reference_image_urls is only supported for #{Types::CHARACTER_MODEL}"
           end
 
-          validate_optional!(params, :output_resolution, Types::OUTPUT_RESOLUTIONS)
-          validate_optional!(params, :aspect_ratio, Types::ASPECT_RATIOS)
           validate_integer_range!(params, :duration_seconds, Types::DURATION_RANGE)
           validate_integer_range!(params, :seed, Types::SEED_RANGE)
         end

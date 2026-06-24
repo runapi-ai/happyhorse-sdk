@@ -6,10 +6,9 @@ from typing import Any, Dict
 
 from runapi.core import Resource, ValidationError
 
+from ..contract_gen import CONTRACT
 from ..types import (
     DURATION_RANGE,
-    IMAGE_TO_VIDEO_MODEL,
-    OUTPUT_RESOLUTIONS,
     SEED_RANGE,
     CompletedImageToVideoResponse,
     ImageToVideoResponse,
@@ -61,12 +60,8 @@ class ImageToVideo(Resource):
         return self._request("get", f"{self.ENDPOINT}/{id}")
 
     def _validate_params(self, params: Dict[str, Any]) -> None:
-        if params.get("model") != IMAGE_TO_VIDEO_MODEL:
-            raise ValidationError("model is required")
-        if not params.get("first_frame_image_url"):
-            raise ValidationError("first_frame_image_url is required")
+        self._validate_contract(CONTRACT["image-to-video"], params)
 
-        self._validate_optional(params, "output_resolution", OUTPUT_RESOLUTIONS)
         self._validate_integer_range(params, "duration_seconds", DURATION_RANGE)
         self._validate_integer_range(params, "seed", SEED_RANGE)
 

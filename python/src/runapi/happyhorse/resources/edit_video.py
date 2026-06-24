@@ -6,10 +6,8 @@ from typing import Any, Dict
 
 from runapi.core import Resource, ValidationError
 
+from ..contract_gen import CONTRACT
 from ..types import (
-    AUDIO_SETTINGS,
-    EDIT_VIDEO_MODEL,
-    OUTPUT_RESOLUTIONS,
     SEED_RANGE,
     CompletedEditVideoResponse,
     EditVideoResponse,
@@ -62,12 +60,10 @@ class EditVideo(Resource):
         return self._request("get", f"{self.ENDPOINT}/{id}")
 
     def _validate_params(self, params: Dict[str, Any]) -> None:
-        if params.get("model") != EDIT_VIDEO_MODEL:
-            raise ValidationError("model is required")
+        self._validate_contract(CONTRACT["edit-video"], params)
+
         if not params.get("prompt"):
             raise ValidationError("prompt is required")
-        if not params.get("source_video_url"):
-            raise ValidationError("source_video_url is required")
 
         reference_image_urls = params.get("reference_image_urls")
         if reference_image_urls and (
@@ -78,8 +74,6 @@ class EditVideo(Resource):
                 f"reference_image_urls must include at most {self.REFERENCE_IMAGE_RANGE.stop - 1} entries"
             )
 
-        self._validate_optional(params, "output_resolution", OUTPUT_RESOLUTIONS)
-        self._validate_optional(params, "audio_setting", AUDIO_SETTINGS)
         self._validate_integer_range(params, "seed", SEED_RANGE)
 
     @staticmethod

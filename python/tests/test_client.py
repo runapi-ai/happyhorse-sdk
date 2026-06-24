@@ -155,7 +155,10 @@ def test_run_narrows_completed_type():
 
 def test_text_to_video_rejects_unknown_model():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="model is required"):
+    with pytest.raises(
+        ValidationError,
+        match="model must be one of: happyhorse-character, happyhorse-text-to-video",
+    ):
         client.text_to_video.create(model="nope", prompt="hi")
 
 
@@ -175,10 +178,20 @@ def test_text_to_video_rejects_reference_images_for_non_character():
         )
 
 
-def test_character_model_requires_reference_images_range():
+def test_character_model_requires_reference_images():
+    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
+    with pytest.raises(ValidationError, match="reference_image_urls is required"):
+        client.text_to_video.create(model="happyhorse-character", prompt="hi", reference_image_urls=[])
+
+
+def test_character_model_rejects_too_many_reference_images():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
     with pytest.raises(ValidationError, match="reference_image_urls must include between 1 and 9 entries"):
-        client.text_to_video.create(model="happyhorse-character", prompt="hi", reference_image_urls=[])
+        client.text_to_video.create(
+            model="happyhorse-character",
+            prompt="hi",
+            reference_image_urls=[f"https://x/{i}.jpg" for i in range(10)],
+        )
 
 
 def test_text_to_video_duration_range():
@@ -189,7 +202,7 @@ def test_text_to_video_duration_range():
 
 def test_text_to_video_rejects_invalid_output_resolution():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="Invalid output_resolution"):
+    with pytest.raises(ValidationError, match="output_resolution must be one of: 720p, 1080p"):
         client.text_to_video.create(
             model="happyhorse-text-to-video", prompt="hi", output_resolution="4k"
         )
@@ -197,7 +210,7 @@ def test_text_to_video_rejects_invalid_output_resolution():
 
 def test_image_to_video_requires_model():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="model is required"):
+    with pytest.raises(ValidationError, match="model must be one of: happyhorse-image-to-video"):
         client.image_to_video.create(model="wrong", first_frame_image_url="https://x/a.jpg")
 
 
@@ -226,7 +239,7 @@ def test_edit_video_reference_images_max():
 
 def test_edit_video_rejects_invalid_audio_setting():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="Invalid audio_setting"):
+    with pytest.raises(ValidationError, match="audio_setting must be one of: auto, original"):
         client.edit_video.create(
             model="happyhorse-edit-video",
             prompt="brighten",

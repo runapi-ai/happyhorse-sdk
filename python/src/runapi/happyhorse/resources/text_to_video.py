@@ -6,13 +6,11 @@ from typing import Any, Dict
 
 from runapi.core import Resource, ValidationError
 
+from ..contract_gen import CONTRACT
 from ..types import (
-    ASPECT_RATIOS,
     CHARACTER_MODEL,
     DURATION_RANGE,
-    OUTPUT_RESOLUTIONS,
     SEED_RANGE,
-    TEXT_TO_VIDEO_MODELS,
     CompletedTextToVideoResponse,
     TextToVideoResponse,
 )
@@ -64,15 +62,14 @@ class TextToVideo(Resource):
         return self._request("get", f"{self.ENDPOINT}/{id}")
 
     def _validate_params(self, params: Dict[str, Any]) -> None:
-        model = params.get("model")
-        if model not in TEXT_TO_VIDEO_MODELS:
-            raise ValidationError("model is required")
+        self._validate_contract(CONTRACT["text-to-video"], params)
+
         if not params.get("prompt"):
             raise ValidationError("prompt is required")
 
         reference_image_urls = params.get("reference_image_urls")
-        if model == CHARACTER_MODEL:
-            if not (
+        if params.get("model") == CHARACTER_MODEL:
+            if reference_image_urls is not None and not (
                 isinstance(reference_image_urls, list)
                 and len(reference_image_urls) in self.REFERENCE_IMAGE_URLS_RANGE
             ):
@@ -83,8 +80,6 @@ class TextToVideo(Resource):
         elif reference_image_urls:
             raise ValidationError(f"reference_image_urls is only supported for {CHARACTER_MODEL}")
 
-        self._validate_optional(params, "output_resolution", OUTPUT_RESOLUTIONS)
-        self._validate_optional(params, "aspect_ratio", ASPECT_RATIOS)
         self._validate_integer_range(params, "duration_seconds", DURATION_RANGE)
         self._validate_integer_range(params, "seed", SEED_RANGE)
 
