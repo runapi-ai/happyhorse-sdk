@@ -102,7 +102,7 @@ def test_image_to_video_create_posts_compacted_body():
     client = HappyHorseClient(api_key="k", http_client=fake)
     client.image_to_video.create(
         model="happyhorse-image-to-video",
-        first_frame_image_url="https://example.com/a.jpg",
+        first_frame_image_url="https://runapi.ai/a.jpg",
         output_resolution="720p",
     )
     assert fake.calls == [
@@ -111,7 +111,7 @@ def test_image_to_video_create_posts_compacted_body():
             "/api/v1/happyhorse/image_to_video",
             {
                 "model": "happyhorse-image-to-video",
-                "first_frame_image_url": "https://example.com/a.jpg",
+                "first_frame_image_url": "https://runapi.ai/a.jpg",
                 "output_resolution": "720p",
             },
         ),
@@ -124,7 +124,7 @@ def test_edit_video_create_posts_compacted_body():
     client.edit_video.create(
         model="happyhorse-edit-video",
         prompt="brighten it",
-        source_video_url="https://example.com/v.mp4",
+        source_video_url="https://runapi.ai/v.mp4",
     )
     assert fake.calls == [
         (
@@ -133,7 +133,7 @@ def test_edit_video_create_posts_compacted_body():
             {
                 "model": "happyhorse-edit-video",
                 "prompt": "brighten it",
-                "source_video_url": "https://example.com/v.mp4",
+                "source_video_url": "https://runapi.ai/v.mp4",
             },
         ),
     ]

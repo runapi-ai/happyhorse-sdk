@@ -1,6 +1,6 @@
 # HappyHorse API Go SDK for RunAPI
 
-The happyhorse ai api Go SDK is the language-specific package for HappyHorse on RunAPI. Use this package for text, image, and edit-video workflows that need JSON request bodies, task status lookup, and consistent RunAPI errors in Go.
+The HappyHorse Go SDK is the language-specific package for HappyHorse on RunAPI. Use this package for video generation, animation, and video editing workflows when your application needs request bodies, task status lookup, and consistent RunAPI errors in Go.
 
 ## Install
 

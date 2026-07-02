@@ -1,6 +1,6 @@
 # HappyHorse API Ruby SDK for RunAPI
 
-The happyhorse ai api Ruby SDK is the language-specific package for HappyHorse on RunAPI. Use this package for text, image, and edit-video workflows that need JSON request bodies, task status lookup, and consistent RunAPI errors in Ruby.
+The HappyHorse Ruby SDK is the language-specific package for HappyHorse on RunAPI. Use this package for video generation, animation, and video editing workflows when your application needs request bodies, task status lookup, and consistent RunAPI errors in Ruby.
 
 ## Install
 

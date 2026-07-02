@@ -1,6 +1,6 @@
-# HappyHorse Python SDK for RunAPI
+# HappyHorse API Python SDK for RunAPI
 
-The HappyHorse Python SDK is the language-specific package for HappyHorse on RunAPI. Use this package for text-to-video, image-to-video, and edit-video workflows that need JSON request bodies, task status lookup, and consistent RunAPI errors in Python.
+The HappyHorse Python SDK is the language-specific package for HappyHorse on RunAPI. Use this package for video generation, animation, and video editing workflows when your application needs request bodies, task status lookup, and consistent RunAPI errors in Python.
 
 ## Install
 
