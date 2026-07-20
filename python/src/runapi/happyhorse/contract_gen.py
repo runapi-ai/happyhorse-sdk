@@ -9,6 +9,9 @@ CONTRACT = {
                 "output_resolution": {
                     "enum": ["720p", "1080p"]
                 },
+                "reference_image_urls": {
+                    "max_items": 5
+                },
                 "seed": {
                     "type": "integer"
                 },
@@ -51,7 +54,9 @@ CONTRACT = {
                     "enum": ["720p", "1080p"]
                 },
                 "reference_image_urls": {
-                    "required": True
+                    "required": True,
+                    "min_items": 1,
+                    "max_items": 9
                 },
                 "seed": {
                     "type": "integer"

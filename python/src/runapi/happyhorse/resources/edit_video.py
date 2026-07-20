@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-from runapi.core import Resource, ValidationError
+from runapi.core import Resource, ValidationError, RequestOptions
 
 from ..contract_gen import CONTRACT
 from ..types import (
@@ -21,9 +21,7 @@ class EditVideo(Resource):
 
     RESPONSE_CLASS = EditVideoResponse
     COMPLETED_RESPONSE_CLASS = CompletedEditVideoResponse
-    REFERENCE_IMAGE_RANGE = range(0, 6)
-
-    def run(self, **params: Any) -> Any:
+    def run(self, options: Optional[RequestOptions] = None, **params: Any) -> Any:
         """Create an edit-video task and poll until it completes.
 
         Args:
@@ -32,10 +30,10 @@ class EditVideo(Resource):
         Returns:
             The completed task with videos.
         """
-        task = self.create(**params)
-        return self._poll_until_complete(lambda: self.get(task.id))
+        task = self.create(options=options, **params)
+        return self._poll_until_complete(lambda: self.get(task.id, options=options))
 
-    def create(self, **params: Any) -> Any:
+    def create(self, options: Optional[RequestOptions] = None, **params: Any) -> Any:
         """Create an edit-video task and return immediately with an ``id``.
 
         Args:
@@ -46,9 +44,9 @@ class EditVideo(Resource):
         """
         compacted = self._compact_params(params)
         self._validate_params(compacted)
-        return self._request("post", self.ENDPOINT, body=compacted)
+        return self._request("post", self.ENDPOINT, body=compacted, options=options)
 
-    def get(self, id: str) -> Any:
+    def get(self, id: str, options: Optional[RequestOptions] = None) -> Any:
         """Fetch the current status of an edit-video task.
 
         Args:
@@ -57,22 +55,13 @@ class EditVideo(Resource):
         Returns:
             The current task status.
         """
-        return self._request("get", f"{self.ENDPOINT}/{id}")
+        return self._request("get", f"{self.ENDPOINT}/{id}", options=options)
 
     def _validate_params(self, params: Dict[str, Any]) -> None:
         self._validate_contract(CONTRACT["edit-video"], params)
 
         if not params.get("prompt"):
             raise ValidationError("prompt is required")
-
-        reference_image_urls = params.get("reference_image_urls")
-        if reference_image_urls and (
-            not isinstance(reference_image_urls, list)
-            or len(reference_image_urls) not in self.REFERENCE_IMAGE_RANGE
-        ):
-            raise ValidationError(
-                f"reference_image_urls must include at most {self.REFERENCE_IMAGE_RANGE.stop - 1} entries"
-            )
 
         self._validate_integer_range(params, "seed", SEED_RANGE)
 

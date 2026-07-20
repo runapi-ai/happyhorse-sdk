@@ -178,15 +178,15 @@ def test_text_to_video_rejects_reference_images_for_non_character():
         )
 
 
-def test_character_model_requires_reference_images():
+def test_character_model_rejects_empty_reference_images():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="reference_image_urls is required"):
+    with pytest.raises(ValidationError, match="reference_image_urls must contain between 1 and 9 items"):
         client.text_to_video.create(model="happyhorse-character", prompt="hi", reference_image_urls=[])
 
 
 def test_character_model_rejects_too_many_reference_images():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="reference_image_urls must include between 1 and 9 entries"):
+    with pytest.raises(ValidationError, match="reference_image_urls must contain between 1 and 9 items"):
         client.text_to_video.create(
             model="happyhorse-character",
             prompt="hi",
@@ -228,7 +228,7 @@ def test_edit_video_requires_source_video_url():
 
 def test_edit_video_reference_images_max():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="reference_image_urls must include at most 5 entries"):
+    with pytest.raises(ValidationError, match="reference_image_urls must contain at most 5 items"):
         client.edit_video.create(
             model="happyhorse-edit-video",
             prompt="brighten",

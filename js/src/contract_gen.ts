@@ -17,6 +17,9 @@ export const contract = {
             "1080p"
           ]
         },
+        "reference_image_urls": {
+          "max_items": 5
+        },
         "seed": {
           "type": "integer"
         },
@@ -76,7 +79,9 @@ export const contract = {
           ]
         },
         "reference_image_urls": {
-          "required": true
+          "required": true,
+          "min_items": 1,
+          "max_items": 9
         },
         "seed": {
           "type": "integer"

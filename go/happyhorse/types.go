@@ -71,7 +71,7 @@ type TextToVideoResponse struct {
 type TextToVideoParams struct {
 	Model              TextToVideoModel `json:"model" help:"required; model slug"`
 	Prompt             string           `json:"prompt" help:"required; up to 5000 non-Chinese chars or 2500 Chinese chars"`
-	ReferenceImageURLs []string         `json:"reference_image_urls,omitempty" help:"required for happyhorse-character; 1 to 9 public reference image URLs"`
+	ReferenceImageURLs []string         `json:"reference_image_urls" help:"required for happyhorse-character; 1 to 9 public reference image URLs"`
 	OutputResolution   OutputResolution `json:"output_resolution,omitempty" help:"optional; output resolution; Default: 1080p"`
 	AspectRatio        AspectRatio      `json:"aspect_ratio,omitempty" help:"optional; output aspect ratio; Default: 16:9"`
 	DurationSeconds    *int             `json:"duration_seconds,omitempty" help:"optional; duration in seconds; Default: 5"`

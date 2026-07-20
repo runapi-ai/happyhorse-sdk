@@ -1,5 +1,11 @@
 # Changelog
 
+## [js/v0.2.8](https://github.com/runapi-ai/happyhorse-sdk/releases/tag/js%2Fv0.2.8), [ruby/v0.2.8](https://github.com/runapi-ai/happyhorse-sdk/releases/tag/ruby%2Fv0.2.8), [go/v0.2.8](https://github.com/runapi-ai/happyhorse-sdk/releases/tag/go%2Fv0.2.8), [python/v0.1.1](https://github.com/runapi-ai/happyhorse-sdk/releases/tag/python%2Fv0.1.1) - 2026-07-20
+
+### Changed
+- Validate character reference image counts and edit-video reference image limits from the generated contract.
+
+
 ## [js/v0.2.7](https://github.com/runapi-ai/happyhorse-sdk/releases/tag/js%2Fv0.2.7), [ruby/v0.2.7](https://github.com/runapi-ai/happyhorse-sdk/releases/tag/ruby%2Fv0.2.7), [go/v0.2.7](https://github.com/runapi-ai/happyhorse-sdk/releases/tag/go%2Fv0.2.7) - 2026-07-02
 
 ### Fixed

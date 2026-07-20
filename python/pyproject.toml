@@ -4,27 +4,28 @@ build-backend = "hatchling.build"
 
 [project]
 name = "runapi-happyhorse"
-version = "0.1.0"
-description = "HappyHorse text-to-video, image-to-video, and edit-video client for RunAPI"
+version = "0.1.1"
+description = "RunAPI HappyHorse SDK for text-to-video, image-to-video, and edit-video workflows in JavaScript, Python, Ruby, Go, Java, and PHP"
 readme = "README.md"
 requires-python = ">=3.9"
 license = "Apache-2.0"
 authors = [{ name = "RunAPI", email = "contact@runapi.ai" }]
-keywords = ["runapi", "happyhorse", "text-to-video", "image-to-video", "edit-video", "ai", "sdk"]
-dependencies = ["runapi-core"]
+keywords = ["runapi", "runapi-ai", "happyhorse", "api", "sdk", "typescript", "python", "ruby", "golang", "java", "maven", "gradle", "video-generation", "text-to-video", "video-api", "happyhorse-ai-api"]
+dependencies = ["runapi-core>=0.2.1"]
 
 [project.urls]
 Homepage = "https://runapi.ai/models/happyhorse"
 Documentation = "https://runapi.ai/docs#sdk-happyhorse"
+Source = "https://github.com/runapi-ai/happyhorse-sdk"
+Issues = "https://github.com/runapi-ai/happyhorse-sdk/issues"
+Changelog = "https://github.com/runapi-ai/happyhorse-sdk/blob/main/CHANGELOG.md"
+"Release Notes" = "https://github.com/runapi-ai/happyhorse-sdk/releases/tag/python%2Fv0.1.1"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/runapi"]
 
 [tool.uv]
 package = true
-
-[tool.uv.sources]
-runapi-core = { workspace = true }
 
 [dependency-groups]
 dev = ["pytest>=8"]

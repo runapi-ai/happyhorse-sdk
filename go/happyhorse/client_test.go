@@ -92,6 +92,22 @@ func TestTextToVideoCreateSendsCharacterRequest(t *testing.T) {
 	}
 }
 
+func TestTextToVideoCreateRejectsEmptyCharacterReferenceImages(t *testing.T) {
+	stub := &stubHTTPClient{}
+	client := NewClientWithHTTP(stub)
+	_, err := client.TextToVideo.Create(context.Background(), TextToVideoParams{
+		Model:              ModelCharacter,
+		Prompt:             "Character1 walks through a paper city",
+		ReferenceImageURLs: []string{},
+	})
+	if err == nil || err.Error() != "reference_image_urls must contain between 1 and 9 items" {
+		t.Fatalf("expected item-count validation error, got %v", err)
+	}
+	if stub.method != "" {
+		t.Fatalf("expected validation before HTTP request, got %s %s", stub.method, stub.path)
+	}
+}
+
 func TestTextToVideoGetSendsCorrectPath(t *testing.T) {
 	stub := &stubHTTPClient{}
 	client := NewClientWithHTTP(stub)

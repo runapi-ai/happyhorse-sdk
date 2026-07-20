@@ -11,7 +11,7 @@ gem install runapi-happyhorse
 ## Quick start
 
 ```ruby
-require "runapi-happyhorse"
+require "runapi/happyhorse"
 
 client = RunApi::HappyHorse::Client.new
 video = client.text_to_video.run(

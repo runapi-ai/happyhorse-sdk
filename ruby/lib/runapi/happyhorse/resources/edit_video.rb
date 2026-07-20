@@ -12,7 +12,6 @@ module RunApi
 
         RESPONSE_CLASS = Types::EditVideoResponse
         COMPLETED_RESPONSE_CLASS = Types::CompletedEditVideoResponse
-        REFERENCE_IMAGE_RANGE = (0..5)
 
         def initialize(http)
           @http = http
@@ -22,27 +21,27 @@ module RunApi
         #
         # @param params [Hash] edit-video parameters
         # @return [RunApi::HappyHorse::Types::CompletedEditVideoResponse] completed task with videos
-        def run(**params)
-          task = create(**params)
-          poll_until_complete { get(task.id) }
+        def run(options: nil, **params)
+          task = create(options: options, **params)
+          poll_until_complete { get(task.id, options: options) }
         end
 
         # Create an edit-video task.
         #
         # @param params [Hash] edit-video parameters
         # @return [RunApi::HappyHorse::Types::EditVideoResponse] task creation result with id
-        def create(**params)
+        def create(options: nil, **params)
           params = compact_params(params)
           validate_params!(params)
-          request(:post, ENDPOINT, body: params)
+          request(:post, ENDPOINT, body: params, options: options)
         end
 
         # Get edit-video task status by task ID.
         #
         # @param id [String] task ID
         # @return [RunApi::HappyHorse::Types::EditVideoResponse] current task status
-        def get(id)
-          request(:get, "#{ENDPOINT}/#{id}")
+        def get(id, options: nil)
+          request(:get, "#{ENDPOINT}/#{id}", options: options)
         end
 
         private
@@ -51,11 +50,6 @@ module RunApi
           validate_contract!(CONTRACT["edit-video"], params)
 
           raise Core::ValidationError, "prompt is required" unless param(params, :prompt)
-
-          reference_image_urls = param(params, :reference_image_urls)
-          if reference_image_urls && (!reference_image_urls.is_a?(Array) || !REFERENCE_IMAGE_RANGE.cover?(reference_image_urls.size))
-            raise Core::ValidationError, "reference_image_urls must include at most #{REFERENCE_IMAGE_RANGE.max} entries"
-          end
 
           validate_integer_range!(params, :seed, Types::SEED_RANGE)
         end

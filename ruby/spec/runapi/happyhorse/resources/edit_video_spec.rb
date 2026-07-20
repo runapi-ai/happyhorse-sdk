@@ -36,7 +36,7 @@ RSpec.describe RunApi::HappyHorse::Resources::EditVideo do
         source_video_url: "https://cdn.runapi.ai/public/samples/source.mp4",
         reference_image_urls: Array.new(6) { |i| "https://cdn.runapi.ai/public/samples/reference-#{i}.png" }
       )
-    }.to raise_error(RunApi::Core::ValidationError, /reference_image_urls must include/)
+    }.to raise_error(RunApi::Core::ValidationError, /reference_image_urls must contain at most 5 items/)
   end
 
   it "rejects invalid audio_setting" do

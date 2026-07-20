@@ -49,7 +49,7 @@ RSpec.describe RunApi::HappyHorse::Resources::TextToVideo do
         prompt: "x",
         reference_image_urls: Array.new(10) { |i| "https://cdn.runapi.ai/public/samples/reference-#{i}.jpg" }
       )
-    }.to raise_error(RunApi::Core::ValidationError, /reference_image_urls must include between 1 and 9 entries/)
+    }.to raise_error(RunApi::Core::ValidationError, /reference_image_urls must contain between 1 and 9 items/)
   end
 
   it "rejects reference_image_urls for plain model" do

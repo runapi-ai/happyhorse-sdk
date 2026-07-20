@@ -13,6 +13,9 @@ module RunApi
             "output_resolution" => {
               "enum" => ["720p", "1080p"]
             },
+            "reference_image_urls" => {
+              "max_items" => 5
+            },
             "seed" => {
               "type" => "integer"
             },
@@ -55,7 +58,9 @@ module RunApi
               "enum" => ["720p", "1080p"]
             },
             "reference_image_urls" => {
-              "required" => true
+              "required" => true,
+              "min_items" => 1,
+              "max_items" => 9
             },
             "seed" => {
               "type" => "integer"
