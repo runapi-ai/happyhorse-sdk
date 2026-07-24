@@ -6,6 +6,9 @@ module RunApi
     module Types
       # Character-consistent model; requires 1-9 reference_image_urls.
       CHARACTER_MODEL = "happyhorse-character"
+      HAPPYHORSE_1_0_T2V_MODEL = "happyhorse-1.0-t2v"
+      HAPPYHORSE_1_0_R2V_MODEL = "happyhorse-1.0-r2v"
+      HAPPYHORSE_1_0_I2V_MODEL = "happyhorse-1.0-i2v"
       # Duration range in seconds (3-15). Defaults to 5.
       DURATION_RANGE = (3..15)
       # Reproducibility seed range.

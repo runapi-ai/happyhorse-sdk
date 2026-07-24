@@ -24,10 +24,13 @@ type TaskStatus string
 const (
 	// ModelTextToVideo generates video from a text prompt.
 	ModelTextToVideo TextToVideoModel = "happyhorse-text-to-video"
+	ModelHappyHorse10T2V TextToVideoModel = "happyhorse-1.0-t2v"
+	ModelHappyHorse10R2V TextToVideoModel = "happyhorse-1.0-r2v"
 	// ModelCharacter generates character-consistent video. Requires ReferenceImageURLs (1-9 images).
 	ModelCharacter TextToVideoModel = "happyhorse-character"
 	// ModelImageToVideo animates a still first-frame image into video.
 	ModelImageToVideo ImageToVideoModel = "happyhorse-image-to-video"
+	ModelHappyHorse10I2V ImageToVideoModel = "happyhorse-1.0-i2v"
 	// ModelEditVideo transforms an existing video guided by a text prompt.
 	ModelEditVideo EditVideoModel = "happyhorse-edit-video"
 

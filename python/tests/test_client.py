@@ -157,7 +157,7 @@ def test_text_to_video_rejects_unknown_model():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
     with pytest.raises(
         ValidationError,
-        match="model must be one of: happyhorse-character, happyhorse-text-to-video",
+        match="model must be one of: happyhorse-1.0-r2v, happyhorse-1.0-t2v, happyhorse-character, happyhorse-text-to-video",
     ):
         client.text_to_video.create(model="nope", prompt="hi")
 
@@ -210,7 +210,10 @@ def test_text_to_video_rejects_invalid_output_resolution():
 
 def test_image_to_video_requires_model():
     client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="model must be one of: happyhorse-image-to-video"):
+    with pytest.raises(
+        ValidationError,
+        match="model must be one of: happyhorse-1.0-i2v, happyhorse-image-to-video",
+    ):
         client.image_to_video.create(model="wrong", first_frame_image_url="https://x/a.jpg")
 
 

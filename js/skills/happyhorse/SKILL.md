@@ -76,6 +76,9 @@ Available commands: `text-to-video`, `image-to-video`, `edit-video`.
 - `happyhorse-text-to-video`: create 3-15 second videos from a text prompt with 720p or 1080p output.
 - `happyhorse-character`: create 3-15 second text-to-video clips guided by 1-9 ordered reference images.
 - `happyhorse-image-to-video`: animate one first-frame image into a 3-15 second video with 720p or 1080p output.
+- `happyhorse-1.0-t2v`: select HappyHorse 1.0 text-to-video.
+- `happyhorse-1.0-r2v`: select HappyHorse 1.0 reference-guided video with 1-9 ordered images.
+- `happyhorse-1.0-i2v`: select HappyHorse 1.0 image-to-video from one first-frame image.
 - `happyhorse-edit-video`: edit one 3-60 second source video using a prompt and up to 5 reference images.
 
 ## Generated file storage

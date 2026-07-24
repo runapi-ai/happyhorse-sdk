@@ -5,6 +5,9 @@ from __future__ import annotations
 from runapi.core import BaseModel, TaskResponse, optional, required
 
 CHARACTER_MODEL = "happyhorse-character"
+HAPPYHORSE_1_0_T2V_MODEL = "happyhorse-1.0-t2v"
+HAPPYHORSE_1_0_R2V_MODEL = "happyhorse-1.0-r2v"
+HAPPYHORSE_1_0_I2V_MODEL = "happyhorse-1.0-i2v"
 DURATION_RANGE = range(3, 16)
 SEED_RANGE = range(0, 2_147_483_648)
 

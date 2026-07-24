@@ -4,8 +4,8 @@ import type { AsyncTaskStatus } from '@runapi.ai/core';
  * Text-to-video model variants. happyhorse-character requires 1-9 reference_image_urls
  * for character-consistent generation; happyhorse-text-to-video is the standard model.
  */
-export type HappyHorseTextToVideoModel = 'happyhorse-text-to-video' | 'happyhorse-character';
-export type HappyHorseImageToVideoModel = 'happyhorse-image-to-video';
+export type HappyHorseTextToVideoModel = 'happyhorse-1.0-t2v' | 'happyhorse-1.0-r2v' | 'happyhorse-text-to-video' | 'happyhorse-character';
+export type HappyHorseImageToVideoModel = 'happyhorse-1.0-i2v' | 'happyhorse-image-to-video';
 export type HappyHorseEditVideoModel = 'happyhorse-edit-video';
 /** Output resolution. Defaults to 1080p. */
 export type HappyHorseOutputResolution = '720p' | '1080p';
