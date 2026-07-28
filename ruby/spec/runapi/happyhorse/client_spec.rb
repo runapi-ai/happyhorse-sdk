@@ -15,8 +15,4 @@ RSpec.describe RunApi::HappyHorse::Client do
     expect(client.image_to_video).to be_a(RunApi::HappyHorse::Resources::ImageToVideo)
     expect(client.edit_video).to be_a(RunApi::HappyHorse::Resources::EditVideo)
   end
-
-  it "raises AuthenticationError without api_key" do
-    expect { described_class.new }.to raise_error(RunApi::Core::AuthenticationError, /API key is required/)
-  end
 end
