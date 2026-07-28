@@ -36,8 +36,8 @@ RunAPI-generated file URLs are temporary. Download and store generated images, v
 ## Links
 
 - Model page: https://runapi.ai/models/happyhorse
-- SDK docs: https://runapi.ai/docs#sdk-happyhorse
-- Product docs: https://runapi.ai/docs#happyhorse
+- SDK docs: https://runapi.ai/docs/resources/sdks
+- Product docs: https://runapi.ai/docs/api/happyhorse/text-to-video
 - Image-to-video pricing and rate limits: https://runapi.ai/models/happyhorse/image-to-video
 - Character pricing and rate limits: https://runapi.ai/models/happyhorse/character
 - Edit-video pricing and rate limits: https://runapi.ai/models/happyhorse/edit-video

@@ -72,8 +72,8 @@ Image-to-video tasks use `client.imageToVideo` with `model: 'happyhorse-image-to
 ## Routing
 
 - Model page: https://runapi.ai/models/happyhorse
-- Product docs: https://runapi.ai/docs#happyhorse
-- SDK docs: https://runapi.ai/docs#sdk-happyhorse
+- Product docs: https://runapi.ai/docs/api/happyhorse/text-to-video
+- SDK docs: https://runapi.ai/docs/resources/sdks
 - SDK repository: https://github.com/runapi-ai/happyhorse-sdk
 - Image-to-video pricing and rate limits: https://runapi.ai/models/happyhorse/image-to-video
 - Character pricing and rate limits: https://runapi.ai/models/happyhorse/character

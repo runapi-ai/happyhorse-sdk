@@ -113,8 +113,8 @@ Most media endpoints are asynchronous. `create()` submits a task and returns its
 ## Public links
 
 - Model page: https://runapi.ai/models/happyhorse
-- SDK docs: https://runapi.ai/docs#sdk-happyhorse
-- Product docs: https://runapi.ai/docs#happyhorse
+- SDK docs: https://runapi.ai/docs/resources/sdks
+- Product docs: https://runapi.ai/docs/api/happyhorse/text-to-video
 - SDK repository: https://github.com/runapi-ai/happyhorse-sdk
 - PHP package repository: https://github.com/runapi-ai/happyhorse-php
 - Skill repository: https://github.com/runapi-ai/happyhorse

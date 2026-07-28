@@ -4,7 +4,7 @@
 
 The HappyHorse Java SDK is the language-specific package for HappyHorse on RunAPI. Use it when your Java application needs typed builders, strict request validation, task status lookup, local polling helpers, file uploads, account helpers, and consistent RunAPI errors for HappyHorse workflows.
 
-This README is the Java package guide inside the public `happyhorse-sdk` repository. For the repository overview, start at `../README.md`; for model details, use https://runapi.ai/models/happyhorse; for API reference, use https://runapi.ai/docs#happyhorse; for SDK docs, use https://runapi.ai/docs#sdk-happyhorse.
+This README is the Java package guide inside the public `happyhorse-sdk` repository. For the repository overview, start at `../README.md`; for model details, use https://runapi.ai/models/happyhorse; for API reference, use https://runapi.ai/docs/api/happyhorse/text-to-video; for SDK docs, use https://runapi.ai/docs/resources/sdks.
 
 ## Requirements
 
@@ -181,8 +181,8 @@ try {
 ## Links
 
 - Model page: https://runapi.ai/models/happyhorse
-- SDK docs: https://runapi.ai/docs#sdk-happyhorse
-- Product docs: https://runapi.ai/docs#happyhorse
+- SDK docs: https://runapi.ai/docs/resources/sdks
+- Product docs: https://runapi.ai/docs/api/happyhorse/text-to-video
 - Pricing and rate limits: https://runapi.ai/models/happyhorse/edit-video
 - Full catalog: https://runapi.ai/models
 - Repository: https://github.com/runapi-ai/happyhorse-sdk
