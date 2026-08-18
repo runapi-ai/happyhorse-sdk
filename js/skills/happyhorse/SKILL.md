@@ -1,6 +1,6 @@
 ---
 name: happyhorse
-description: Generate text, image, or edit-video clips with HappyHorse through RunAPI. Use when the user asks an agent to create video from text, a first-frame image, ordered reference images, or an edited source video with HappyHorse. Default to the RunAPI CLI for one-off generation; use SDKs only when the user is integrating RunAPI into an app or backend.
+description: "Generate text, image, or edit-video clips with HappyHorse through RunAPI. Use when the user asks an agent to create video from text, a first-frame image, ordered reference images, or an edited source video with HappyHorse. Default to the RunAPI CLI for one-off generation; use SDKs only when the user is integrating RunAPI into an app or backend."
 documentation: https://runapi.ai/models/happyhorse.md
 provider_page: https://runapi.ai/providers/alibaba.md
 catalog: https://runapi.ai/models.md
@@ -18,79 +18,104 @@ metadata:
     envVars:
     - name: RUNAPI_API_KEY
       required: false
-      description: Optional RunAPI API key; agents should prefer environment auth or saved CLI config. Browser login is interactive only.
+      description: Optional RunAPI API key; agents should prefer environment auth or saved CLI config. Browser login is interactive fallback only.
 ---
 
 # HappyHorse on RunAPI
 
-Generate text, image, or edit-video clips with HappyHorse through RunAPI. Text-to-video can also use ordered reference images through the character model. The default path for one-off agent tasks is the `runapi` CLI; SDKs are for application integration.
+## Choose route
 
-## Critical: Integration Runtime
+- For a one-off artifact or result, use the registered `happyhorse` service in the `runapi` CLI. If the installed command catalog does not list it, stop and report the missing service instead of inventing a command.
+- For an app, backend, worker, library, webhook pipeline, or production codebase, go directly to **Integrate with SDK**. Never shell out to the CLI as the production runtime.
 
-- Integration work (app, backend, worker, library, Rails service, Node service, Go service, webhook pipeline, or production codebase) uses the **SDK integration path** for the target language.
-- One-off generation, editing, transformation, manual smoke tests, debugging, or user-requested CLI runs use the **CLI path** with the `runapi` binary. For full CLI-specific agent guidance, see https://github.com/runapi-ai/cli-skill.
-- Never shell out to the `runapi` CLI as the production runtime integration layer.
+## Discover contract
 
-## SDK integration path
-
-When integrating HappyHorse into an app, backend, worker, library, Rails service, Node service, Go service, webhook pipeline, or production workflow, start by checking the current SDK package and official usage. Confirm install commands, client methods (`create`, `get`, `run`), request fields, response shape, and error classes before using CLI help or raw HTTP examples. Use a RunAPI SDK package:
-
-- JavaScript / TypeScript: `@runapi.ai/happyhorse`
-- Ruby: `runapi-happyhorse`
-- Go: `github.com/runapi-ai/happyhorse-sdk/go`
-
-## CLI path
-
-The `runapi` binary is the one-off and manual testing runtime dependency. For full CLI-specific agent guidance, see https://github.com/runapi-ai/cli-skill. Run `runapi auth status` first. For agents and headless runs, prefer `RUNAPI_API_KEY` or import it into saved config with `printf '%s' "$RUNAPI_API_KEY" | runapi auth import-token --token -`. Use `runapi login` only when the user explicitly wants interactive browser auth.
-
-Inspect the available commands and request fields with CLI help:
+Authenticate, then inspect the installed command catalog and the selected operation's current contract:
 
 ```shell
+runapi auth status > auth.json
+jq -e '.authenticated == true' auth.json
 runapi happyhorse --help
-runapi happyhorse text-to-video --help
-runapi happyhorse image-to-video --help
-runapi happyhorse edit-video --help
+runapi happyhorse <operation> --help
+curl --fail --location https://runapi.ai/docs/api/happyhorse/<operation>.md --output contract.md
 ```
 
-Run a one-off task:
+If authentication is false, stop before submitting. Ask the user to provide a valid `RUNAPI_API_KEY`, or import a user-provided key from stdin with `runapi auth import-token --token -`; use interactive browser login only when the user explicitly requests it. Choose `<operation>` only from service help. Treat command help as authoritative for the installed operation, model, and top-level field roster. Treat its API Reference as authoritative for the complete request schema, nested fields, conditional rules, task behavior, and response variants. If the two surfaces disagree, stop and report the contract mismatch instead of guessing.
+
+## Build request
+
+Create `request.json` as valid JSON using only fields accepted by the discovered operation contract. For the chosen model and values, evaluate every applicable conditional rule as a set: satisfy every required field, omit every forbidden field, and stop on unresolved contradictions.
+
+Traverse nested objects and arrays before execution. Close every relationship stated by the discovered contract, including uniqueness constraints and cross-references between nested values.
+
+For a discovered local media input, including file-typed fields and top-level media URL fields, put an agent-readable local file path directly in `request.json`. The CLI consumes file fields as declared and uploads local paths in top-level media URL fields. Use `runapi files create` only when the user needs a reusable URL, provides Base64, or the discovered contract explicitly requires a separate upload.
+
+Validate the file before sending it:
 
 ```shell
-runapi happyhorse text-to-video --input-file request.json
-runapi happyhorse image-to-video --input-file request.json
-runapi happyhorse edit-video --input-file request.json
+jq empty request.json
 ```
 
-Submit asynchronously and poll separately:
+## Execute
+
+Submit exactly once and persist the task response before waiting:
 
 ```shell
-runapi happyhorse text-to-video --async --input-file request.json
-runapi wait <task-id> --service happyhorse --action text-to-video
+runapi happyhorse <operation> --async --input-file request.json > task.json
+task_id="$(jq -er '.id' task.json)"
 ```
 
-For image-to-video and edit-video, use the same async pattern with `--action image-to-video` or `--action edit-video`.
+For a one-off result, immediately wait for that same task and save the complete JSON response. This blocking wait is the default:
 
-Available commands: `text-to-video`, `image-to-video`, `edit-video`.
+```shell
+runapi wait "$task_id" --service happyhorse --action <operation> > result.json
+```
 
-## Variants
+Only when the user explicitly asks for background execution, polling, or webhook integration may you stop after validating `task.json`. Report the task id and do not claim that the deliverable is complete.
 
-- `happyhorse-text-to-video`: create 3-15 second videos from a text prompt with 720p or 1080p output.
-- `happyhorse-character`: create 3-15 second text-to-video clips guided by 1-9 ordered reference images.
-- `happyhorse-image-to-video`: animate one first-frame image into a 3-15 second video with 720p or 1080p output.
-- `happyhorse-1.0-t2v`: select HappyHorse 1.0 text-to-video.
-- `happyhorse-1.0-r2v`: select HappyHorse 1.0 reference-guided video with 1-9 ordered images.
-- `happyhorse-1.0-i2v`: select HappyHorse 1.0 image-to-video from one first-frame image.
-- `happyhorse-edit-video`: edit one 3-60 second source video using a prompt and up to 5 reference images.
+## Verify
 
-## Generated file storage
+A success status is not the deliverable. Read and validate the complete response according to the discovered result contract. Preserve the complete non-media result in the exact requested format, including JSON, text, SRT, or VTT.
 
-RunAPI-generated file URLs are temporary. Download and store generated images, videos, audio, or other files in your own durable storage within 7 days; do not treat returned URLs as long-term assets.
+For every requested media deliverable listed anywhere in the response, download all of them rather than returning only the first URL. Before downloading, derive its expected MIME type or family from response metadata when present, then the selected output format, then an unambiguous result field such as `videos`, `images`, or `audios` in the API Reference. The Catalog-declared fallback families for this skill are `video/*`. Stop only when no single expected type or family can be established from those sources.
+
+For every downloaded file, require both a non-empty file and the expected MIME type or family:
+
+```shell
+curl --fail --location <deliverable-url> --output <downloaded-file>
+for file in <downloaded-files>; do
+  expected_mime=<expected-MIME-or-family-pattern-for-this-file>
+  test -s "$file"
+  [[ "$(file --brief --mime-type "$file")" == $expected_mime ]]
+done
+```
+
+Do not report completion when any requested deliverable is missing, empty, or has an unexpected MIME type. Record `Skill Conformance` separately from `Task Outcome` so a service failure does not hide whether this recipe was followed.
+
+## Recover or stop
+
+- Correct a request shape at most once, and only when the discovered contract or returned validation error identifies the correction.
+- Retry a transient transport failure at most once, and only when evidence confirms that no task was created, no billing occurred, and retrying is safe.
+- If waiting times out or loses transport after `task.json` exists, preserve the error and rerun `runapi wait` for that same task at most once. Never submit a replacement task.
+- On a terminal RunAPI or service failure, preserve the task/error evidence and stop. Keep the selected model and capability, and do not submit another paid request without user authorization.
+- If the contract is missing a fact required to build or verify the request, stop and report the contract gap. Do not turn a product defect into a permanent skill workaround.
+
+## Integrate with SDK
+
+Use this route only for application or production-code integration. Open the current RunAPI SDK reference below, select the package for the target language and `HappyHorse`, and confirm its install command, client methods, request types, response types, and error classes before coding. Build the request from the same discovered product contract and apply the same deliverable verification and stop rules. Do not invoke `runapi` as a subprocess from production code.
 
 ## References
 
 - Model overview, pricing, and rate limits: https://runapi.ai/models/happyhorse.md
-- Text-to-video variant: https://runapi.ai/models/happyhorse/text-to-video.md
-- Character variant: https://runapi.ai/models/happyhorse/character.md
-- Image-to-video variant: https://runapi.ai/models/happyhorse/image-to-video.md
-- Edit-video variant: https://runapi.ai/models/happyhorse/edit-video.md
-- Provider comparison: https://runapi.ai/providers/alibaba.md
+- Provider overview: https://runapi.ai/providers/alibaba.md
 - Full model catalog: https://runapi.ai/models.md
+- SDK integration: https://github.com/runapi-ai/happyhorse-sdk
+
+## Variants
+- `happyhorse-1.0-i2v`: https://runapi.ai/models/happyhorse/1.0-i2v.md
+- `happyhorse-1.0-r2v`: https://runapi.ai/models/happyhorse/1.0-r2v.md
+- `happyhorse-1.0-t2v`: https://runapi.ai/models/happyhorse/1.0-t2v.md
+- `happyhorse-character`: https://runapi.ai/models/happyhorse/character.md
+- `happyhorse-edit-video`: https://runapi.ai/models/happyhorse/edit-video.md
+- `happyhorse-image-to-video`: https://runapi.ai/models/happyhorse/image-to-video.md
+- `happyhorse-text-to-video`: https://runapi.ai/models/happyhorse/text-to-video.md
