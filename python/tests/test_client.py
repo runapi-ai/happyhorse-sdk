@@ -85,8 +85,7 @@ def test_text_to_video_create_posts_compacted_body():
             "post",
             "/api/v1/happyhorse/text_to_video",
             {"model": "happyhorse-text-to-video", "prompt": "a horse", "aspect_ratio": "16:9"},
-        ),
-    ]
+        )]
     assert isinstance(result, TextToVideoResponse)
 
 
@@ -112,10 +111,8 @@ def test_image_to_video_create_posts_compacted_body():
             {
                 "model": "happyhorse-image-to-video",
                 "first_frame_image_url": "https://runapi.ai/a.jpg",
-                "output_resolution": "720p",
-            },
-        ),
-    ]
+                "output_resolution": "720p"},
+        )]
 
 
 def test_edit_video_create_posts_compacted_body():
@@ -133,16 +130,14 @@ def test_edit_video_create_posts_compacted_body():
             {
                 "model": "happyhorse-edit-video",
                 "prompt": "brighten it",
-                "source_video_url": "https://runapi.ai/v.mp4",
-            },
-        ),
-    ]
+                "source_video_url": "https://runapi.ai/v.mp4"},
+        )]
 
 
 def test_run_narrows_completed_type():
     fake = FakeHttp(
         {"id": "t1", "status": "pending"},
-        {"id": "t1", "status": "completed", "videos": [{"url": "https://x/y.mp4"}]},
+        {"id": "t1", "status": "completed", "usage": {"cost": 0.05}, "videos": [{"url": "https://x/y.mp4"}]},
     )
     client = HappyHorseClient(api_key="k", http_client=fake)
     result = client.text_to_video.run(model="happyhorse-text-to-video", prompt="a serene river")
