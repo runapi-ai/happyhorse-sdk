@@ -35,42 +35,4 @@ RSpec.describe RunApi::HappyHorse::Resources::TextToVideo do
     result = resource.create(**params)
     expect(result.id).to eq("task-character-1")
   end
-
-  it "requires reference_image_urls for character model" do
-    expect {
-      resource.create(model: "happyhorse-character", prompt: "x")
-    }.to raise_error(RunApi::Core::ValidationError, /reference_image_urls is required/)
-  end
-
-  it "rejects too many reference_image_urls for character model" do
-    expect {
-      resource.create(
-        model: "happyhorse-character",
-        prompt: "x",
-        reference_image_urls: Array.new(10) { |i| "https://cdn.runapi.ai/public/samples/reference-#{i}.jpg" }
-      )
-    }.to raise_error(RunApi::Core::ValidationError, /reference_image_urls must contain between 1 and 9 items/)
-  end
-
-  it "rejects reference_image_urls for plain model" do
-    expect {
-      resource.create(
-        model: "happyhorse-text-to-video",
-        prompt: "x",
-        reference_image_urls: ["https://cdn.runapi.ai/public/samples/reference-1.jpg"]
-      )
-    }.to raise_error(RunApi::Core::ValidationError, /only supported/)
-  end
-
-  it "rejects invalid duration_seconds" do
-    expect {
-      resource.create(model: "happyhorse-text-to-video", prompt: "x", duration_seconds: 20)
-    }.to raise_error(RunApi::Core::ValidationError, /duration_seconds must be an integer/)
-  end
-
-  it "rejects string duration_seconds" do
-    expect {
-      resource.create(model: "happyhorse-text-to-video", prompt: "x", duration_seconds: "5")
-    }.to raise_error(RunApi::Core::ValidationError, /duration_seconds must be an integer/)
-  end
 end

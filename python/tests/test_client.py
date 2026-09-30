@@ -1,7 +1,7 @@
 import pytest
 
 from runapi.core import config
-from runapi.core.errors import AuthenticationError, ValidationError
+from runapi.core.errors import AuthenticationError
 from runapi.happyhorse import HappyHorseClient
 from runapi.happyhorse.resources.edit_video import EditVideo
 from runapi.happyhorse.resources.image_to_video import ImageToVideo
@@ -143,104 +143,3 @@ def test_run_narrows_completed_type():
     result = client.text_to_video.run(model="happyhorse-text-to-video", prompt="a serene river")
     assert isinstance(result, CompletedTextToVideoResponse)
     assert result.videos[0].url == "https://x/y.mp4"
-
-
-# --- validation -----------------------------------------------------------
-
-
-def test_text_to_video_rejects_unknown_model():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(
-        ValidationError,
-        match="model must be one of: happyhorse-1.0-r2v, happyhorse-1.0-t2v, happyhorse-character, happyhorse-text-to-video",
-    ):
-        client.text_to_video.create(model="nope", prompt="hi")
-
-
-def test_text_to_video_requires_prompt():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="prompt is required"):
-        client.text_to_video.create(model="happyhorse-text-to-video")
-
-
-def test_text_to_video_rejects_reference_images_for_non_character():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="reference_image_urls is only supported for happyhorse-character"):
-        client.text_to_video.create(
-            model="happyhorse-text-to-video",
-            prompt="hi",
-            reference_image_urls=["https://x/a.jpg"],
-        )
-
-
-def test_character_model_rejects_empty_reference_images():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="reference_image_urls must contain between 1 and 9 items"):
-        client.text_to_video.create(model="happyhorse-character", prompt="hi", reference_image_urls=[])
-
-
-def test_character_model_rejects_too_many_reference_images():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="reference_image_urls must contain between 1 and 9 items"):
-        client.text_to_video.create(
-            model="happyhorse-character",
-            prompt="hi",
-            reference_image_urls=[f"https://x/{i}.jpg" for i in range(10)],
-        )
-
-
-def test_text_to_video_duration_range():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="duration_seconds must be an integer between 3 and 15"):
-        client.text_to_video.create(model="happyhorse-text-to-video", prompt="hi", duration_seconds=99)
-
-
-def test_text_to_video_rejects_invalid_output_resolution():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="output_resolution must be one of: 720p, 1080p"):
-        client.text_to_video.create(
-            model="happyhorse-text-to-video", prompt="hi", output_resolution="4k"
-        )
-
-
-def test_image_to_video_requires_model():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(
-        ValidationError,
-        match="model must be one of: happyhorse-1.0-i2v, happyhorse-image-to-video",
-    ):
-        client.image_to_video.create(model="wrong", first_frame_image_url="https://x/a.jpg")
-
-
-def test_image_to_video_requires_first_frame():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="first_frame_image_url is required"):
-        client.image_to_video.create(model="happyhorse-image-to-video")
-
-
-def test_edit_video_requires_source_video_url():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="source_video_url is required"):
-        client.edit_video.create(model="happyhorse-edit-video", prompt="brighten")
-
-
-def test_edit_video_reference_images_max():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="reference_image_urls must contain at most 5 items"):
-        client.edit_video.create(
-            model="happyhorse-edit-video",
-            prompt="brighten",
-            source_video_url="https://x/v.mp4",
-            reference_image_urls=["a", "b", "c", "d", "e", "f"],
-        )
-
-
-def test_edit_video_rejects_invalid_audio_setting():
-    client = HappyHorseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="audio_setting must be one of: auto, original"):
-        client.edit_video.create(
-            model="happyhorse-edit-video",
-            prompt="brighten",
-            source_video_url="https://x/v.mp4",
-            audio_setting="muted",
-        )

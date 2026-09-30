@@ -18,7 +18,7 @@ public final class EditVideoParams {
   private EditVideoParams(Builder builder) {
     this.model = builder.model;
     this.prompt = builder.prompt;
-    this.sourceVideoUrl = HappyhorseParamUtils.requireNonBlank(builder.sourceVideoUrl, "sourceVideoUrl");
+    this.sourceVideoUrl = builder.sourceVideoUrl;
     this.referenceImageUrls = HappyhorseParamUtils.strings(builder.referenceImageUrls);
     this.outputResolution = builder.outputResolution;
     this.audioSetting = builder.audioSetting;
@@ -73,20 +73,20 @@ public final class EditVideoParams {
 
     /** Sets the model slug using a string value. */
     public Builder model(String value) {
-      this.model = HappyhorseParamUtils.requireNonBlankTrim(value, "model");
+      this.model = value;
       return this;
     }
 
 
     /** Sets the text prompt. */
     public Builder prompt(String value) {
-      this.prompt = HappyhorseParamUtils.requireNonBlank(value, "prompt");
+      this.prompt = value;
       return this;
     }
 
     /** Sets the source video URL. */
     public Builder sourceVideoUrl(String value) {
-      this.sourceVideoUrl = HappyhorseParamUtils.requireNonBlank(value, "sourceVideoUrl");
+      this.sourceVideoUrl = value;
       return this;
     }
 
@@ -98,13 +98,13 @@ public final class EditVideoParams {
 
     /** Sets the output resolution. */
     public Builder outputResolution(String value) {
-      this.outputResolution = HappyhorseParamUtils.requireNonBlank(value, "outputResolution");
+      this.outputResolution = value;
       return this;
     }
 
     /** Sets the audio setting. */
     public Builder audioSetting(String value) {
-      this.audioSetting = HappyhorseParamUtils.requireNonBlank(value, "audioSetting");
+      this.audioSetting = value;
       return this;
     }
 
@@ -116,7 +116,7 @@ public final class EditVideoParams {
 
     /** Sets the webhook URL for task completion notifications. */
     public Builder callbackUrl(String value) {
-      this.callbackUrl = HappyhorseParamUtils.requireNonBlank(value, "callbackUrl");
+      this.callbackUrl = value;
       return this;
     }
 

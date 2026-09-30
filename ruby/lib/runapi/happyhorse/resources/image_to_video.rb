@@ -32,7 +32,6 @@ module RunApi
         # @return [RunApi::HappyHorse::Types::ImageToVideoResponse] task creation result with id
         def create(options: nil, **params)
           params = compact_params(params)
-          validate_params!(params)
           request(:post, ENDPOINT, body: params, options: options)
         end
 
@@ -42,24 +41,6 @@ module RunApi
         # @return [RunApi::HappyHorse::Types::ImageToVideoResponse] current task status
         def get(id, options: nil)
           request(:get, "#{ENDPOINT}/#{id}", options: options)
-        end
-
-        private
-
-        def validate_params!(params)
-          validate_contract!(CONTRACT["image-to-video"], params)
-
-          validate_integer_range!(params, :duration_seconds, Types::DURATION_RANGE)
-          validate_integer_range!(params, :seed, Types::SEED_RANGE)
-        end
-
-        def validate_integer_range!(params, key, range)
-          value = param(params, key)
-          return unless value
-
-          return if value.is_a?(Integer) && range.cover?(value)
-
-          raise Core::ValidationError, "#{key} must be an integer between #{range.min} and #{range.max}"
         end
       end
     end

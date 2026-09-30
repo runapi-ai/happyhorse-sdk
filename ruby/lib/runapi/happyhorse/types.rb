@@ -9,10 +9,6 @@ module RunApi
       HAPPYHORSE_1_0_T2V_MODEL = "happyhorse-1.0-t2v"
       HAPPYHORSE_1_0_R2V_MODEL = "happyhorse-1.0-r2v"
       HAPPYHORSE_1_0_I2V_MODEL = "happyhorse-1.0-i2v"
-      # Duration range in seconds (3-15). Defaults to 5.
-      DURATION_RANGE = (3..15)
-      # Reproducibility seed range.
-      SEED_RANGE = (0..2_147_483_647)
 
       # A generated video file with a download URL.
       class MediaUrl < RunApi::Core::BaseModel
